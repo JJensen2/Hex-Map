@@ -293,10 +293,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colors:
-  - {r: 0.9705882, g: 0.11418684, b: 0.11418684, a: 0}
-  - {r: 0.26512647, g: 0.17436202, b: 0.9485294, a: 0}
-  - {r: 0.28671995, g: 0.88235295, b: 0.20761244, a: 0}
-  - {r: 0.76052386, g: 0.9705882, b: 0.034, a: 0}
+  - {r: 1, g: 0.18382353, b: 0.18382353, a: 0}
+  - {r: 0.1544118, g: 0.16024339, b: 1, a: 0}
+  - {r: 0, g: 0.52205884, b: 0.11161254, a: 0}
+  - {r: 0.8707911, g: 1, b: 0.2794118, a: 0}
   hexGrid: {fileID: 1592253727}
 --- !u!114 &269732025
 MonoBehaviour:
@@ -1716,9 +1716,10 @@ MonoBehaviour:
   height: 6
   cellPrefab: {fileID: 114235172376506020, guid: 7ab8ad5b20aaa094e85b5a768c205f0f,
     type: 2}
-  cellLabelPrefab: {fileID: 114185720341273672, guid: ce094fa2a53db914cb2a685fbead4bf0,
+  cellLabelPrefab: {fileID: 114185720341273672, guid: d80cd9b212915274da6c8e857be8bcc4,
     type: 2}
   defaultColor: {r: 1, g: 1, b: 1, a: 1}
+  noiseSource: {fileID: 2800000, guid: 0327b476cbf47b24690397ec8c8a4b91, type: 3}
 --- !u!4 &1592253728
 Transform:
   m_ObjectHideFlags: 0
