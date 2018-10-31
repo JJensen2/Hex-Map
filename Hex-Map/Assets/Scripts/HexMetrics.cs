@@ -7,17 +7,22 @@ public static class HexMetrics {
     public const float innerRadius = outerRadius * 0.866025404f;
 
     // What percent of a hex will have a blended color
-    public const float solidFactor = 0.75f;
+    public const float solidFactor = 0.8f;
     public const float blendFactor = 1f - solidFactor;
 
     // Units of elevation per step
-    public const float elevationStep = 5f;
+    public const float elevationStep = 3f;
 
     // Number of steps in a verticle hex connection
     public const int terracesPerSlope = 2;
     public const int terraceSteps = terracesPerSlope * 2 + 1;
     public const float horizontalTerraceStepSize = 1f / terraceSteps;
     public const float verticalTerraceStepSize = 1f / (terracesPerSlope + 1);
+
+    public static Texture2D noiseSource;
+    public const float cellPerturbStrength = 4f;
+    public const float noiseScale = 0.003f;
+    public const float elevationPerturbStrength = 1.5f;
 
     static Vector3[] corners = {
         new Vector3(0f, 0f, outerRadius),
@@ -88,5 +93,8 @@ public static class HexMetrics {
         return HexEdgeType.Cliff;
     }
 
-    
+    public static Vector4 SampleNoise(Vector3 position)
+    {
+        return noiseSource.GetPixelBilinear(position.x * noiseScale, position.z * noiseScale);
+    }
 }
