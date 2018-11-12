@@ -12,6 +12,10 @@ public class HexCell : MonoBehaviour {
     // RectTransform of the ui label
     public RectTransform uiRect;
 
+    // Rivers
+    bool hasIncomingRiver, hasOutgoingRiver;
+    HexDirection incomingRiver, outgoingRiver;
+
     [SerializeField]
     HexCell[] neighbors;
 
@@ -24,6 +28,13 @@ public class HexCell : MonoBehaviour {
             }
     }
 
+    public float RiverSurfaceY
+    {
+        get
+        {
+            return (elevation + HexMetrics.riverSurfaceElevationOffset) * HexMetrics.elevationStep;
+        }
+    }
     public Color Color
     {
         get
@@ -41,6 +52,18 @@ public class HexCell : MonoBehaviour {
         }
     }
 
+    public float StreamBedY
+    {
+        get
+        {
+            return (elevation + HexMetrics.streamBedElevationOffset) * HexMetrics.elevationStep;
+        }
+    }
+
+    void RefreshSelfOnly()
+    {
+        chunk.Refresh();
+    }
     void Refresh()
     {
         if (chunk)
@@ -56,7 +79,7 @@ public class HexCell : MonoBehaviour {
             }
         }
     }
-
+    
     // Return a neighboring cell by direction
     public HexCell GetNeighbor (HexDirection direction)
     {
@@ -94,6 +117,16 @@ public class HexCell : MonoBehaviour {
             uiPosition.z = -position.y;
             uiRect.localPosition = uiPosition;
 
+            // Prevent uphill rivers
+            if (hasOutgoingRiver && elevation < GetNeighbor(outgoingRiver).elevation)
+            {
+                RemoveOutgoingRiver();
+            }
+            if(hasIncomingRiver && elevation > GetNeighbor(incomingRiver).elevation)
+            {
+                RemoveIncomingRiver();
+            }
+
             Refresh();
         }
     }
@@ -107,5 +140,115 @@ public class HexCell : MonoBehaviour {
     public HexMetrics.HexEdgeType GetEdgeType(HexCell otherCell)
     {
         return HexMetrics.GetEdgeType(elevation, otherCell.elevation);
+    }
+
+    // Rivers
+    public bool HasIncomingRiver
+    {
+        get
+        {
+            return hasIncomingRiver;
+        }
+    }
+    public bool HasOutgoingRiver
+    {
+        get
+        {
+            return hasOutgoingRiver;
+        }
+    }
+    public HexDirection IncomingRiver
+    {
+        get
+        {
+            return incomingRiver;
+        }
+    }
+    public HexDirection OutgoingRiver
+    {
+        get
+        {
+            return outgoingRiver;
+        }
+    }
+    public bool HasRiver
+    {
+        get
+        {
+            return hasIncomingRiver || hasOutgoingRiver;
+        }
+    }
+    public bool HasRiverBeginOrEnd
+    {
+        get
+        {
+            return hasIncomingRiver != hasOutgoingRiver;
+        }
+    }
+    public bool HasRiverThroughEdge(HexDirection direction)
+    {
+        return hasIncomingRiver && incomingRiver == direction ||
+               hasOutgoingRiver && outgoingRiver == direction;
+    }
+    // Remove Rivers
+    public void RemoveOutgoingRiver()
+    {
+        if (!hasOutgoingRiver)
+        {
+            return;
+        }
+        hasOutgoingRiver = false;
+        RefreshSelfOnly();
+
+        // Remove source of the outgoing river
+        HexCell neighbor = GetNeighbor(outgoingRiver);
+        neighbor.hasIncomingRiver = false;
+        neighbor.RefreshSelfOnly();
+    }
+    public void RemoveIncomingRiver()
+    {
+        if (!hasIncomingRiver)
+        {
+            return;
+        }
+        hasIncomingRiver = false;
+        RefreshSelfOnly();
+
+        HexCell neighbor = GetNeighbor(incomingRiver);
+        neighbor.hasOutgoingRiver = false;
+        neighbor.RefreshSelfOnly();
+    }
+    public void RemoveRiver()
+    {
+        RemoveOutgoingRiver();
+        RemoveIncomingRiver();
+    }
+    // Adding Rivers
+    public void SetOutgoingRiver(HexDirection direction)
+    {
+        if (hasOutgoingRiver && outgoingRiver == direction)
+        {
+            return;
+        }
+        HexCell neighbor = GetNeighbor(direction);
+        if (!neighbor || elevation < neighbor.elevation)
+        {
+            return;
+        }
+        // Clear previous river
+        RemoveOutgoingRiver();
+        if (hasIncomingRiver && IncomingRiver == direction)
+        {
+            RemoveIncomingRiver();
+        }
+        // Set outgoing river
+        hasOutgoingRiver = true;
+        outgoingRiver = direction;
+        RefreshSelfOnly();
+        // Set incoming river
+        neighbor.RemoveIncomingRiver();
+        neighbor.hasIncomingRiver = true;
+        neighbor.incomingRiver = direction.Opposite();
+        neighbor.RefreshSelfOnly();
     }
 }
