@@ -16,7 +16,7 @@ public class HexGrid : MonoBehaviour {
     int cellCountX, cellCountZ;
     public HexGridChunk chunkPrefab;
     HexGridChunk[] chunks;
-    
+ 
     void Awake()
     {
         // Assign the noise sample texture to the hexmetrics field
