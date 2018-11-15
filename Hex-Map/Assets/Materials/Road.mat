@@ -6,7 +6,7 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: River
+  m_Name: Road
   m_Shader: {fileID: 4800000, guid: 0d3115a590df6004fadcb1d5fb87983d, type: 3}
   m_ShaderKeywords: _EMISSION
   m_LightmapFlags: 1
@@ -121,7 +121,7 @@ Material:
     m_Colors:
     - first:
         name: _Color
-      second: {r: 0.2509804, g: 0.41176474, b: 1, a: 1}
+      second: {r: 0.47794116, g: 0.06468688, b: 0.06468688, a: 1}
     - first:
         name: _EmissionColor
       second: {r: 0, g: 0, b: 0, a: 1}
