@@ -14,12 +14,12 @@ public class HexMapEditor : MonoBehaviour {
     bool applyColor;
     // If the elevation should be changed
     bool applyElevation = true;
-    // How to handle rivers
+    // Toggles
     enum OptionalToggle
     {
         Ignore, Yes, No
     }
-    OptionalToggle riverMode;
+    OptionalToggle riverMode, roadMode;
     // Dragging
     bool isDrag;
     HexDirection dragDirection;
@@ -111,14 +111,26 @@ public class HexMapEditor : MonoBehaviour {
             {
                 cell.RemoveRiver();
             }
-            else if (isDrag && riverMode == OptionalToggle.Yes)
+            if (roadMode == OptionalToggle.No)
+            {
+                cell.RemoveRoads();
+            }
+            if (isDrag)
             {
                 HexCell otherCell = cell.GetNeighbor(dragDirection.Opposite());
                 if (otherCell)
                 {
-                    otherCell.SetOutgoingRiver(dragDirection);
+                    if(riverMode == OptionalToggle.Yes)
+                    {
+                       otherCell.SetOutgoingRiver(dragDirection);
+                    }
+                   if(roadMode == OptionalToggle.Yes)
+                   {
+                       otherCell.AddRoad(dragDirection);
+                   }
                 }
             }
+            
         }
     }
 
@@ -170,5 +182,10 @@ public class HexMapEditor : MonoBehaviour {
             }
         }
         isDrag = false;
+    }
+
+    public void SetRoadMode(int mode)
+    {
+        roadMode = (OptionalToggle)mode;
     }
 }
