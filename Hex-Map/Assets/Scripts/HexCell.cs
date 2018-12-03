@@ -23,6 +23,9 @@ public class HexCell : MonoBehaviour {
     [SerializeField]
     bool[] roads;
 
+    // Water
+    int waterLevel;
+
     public static Texture2D noiseSource;
 
     public Vector3 Position
@@ -36,7 +39,7 @@ public class HexCell : MonoBehaviour {
     {
         get
         {
-            return (elevation + HexMetrics.riverSurfaceElevationOffset) * HexMetrics.elevationStep;
+            return (elevation + HexMetrics.waterElevationOffset) * HexMetrics.elevationStep;
         }
     }
     public Color Color
@@ -122,14 +125,7 @@ public class HexCell : MonoBehaviour {
             uiRect.localPosition = uiPosition;
 
             // Prevent uphill rivers
-            if (hasOutgoingRiver && elevation < GetNeighbor(outgoingRiver).elevation)
-            {
-                RemoveOutgoingRiver();
-            }
-            if(hasIncomingRiver && elevation > GetNeighbor(incomingRiver).elevation)
-            {
-                RemoveIncomingRiver();
-            }
+            ValidateRivers();
 
             // Clear invalid roads
             for (int i = 0; i < roads.Length; i++)
@@ -255,7 +251,7 @@ public class HexCell : MonoBehaviour {
             return;
         }
         HexCell neighbor = GetNeighbor(direction);
-        if (!neighbor || elevation < neighbor.elevation)
+        if (!IsValidRiverDestination(neighbor))
         {
             return;
         }
@@ -321,5 +317,51 @@ public class HexCell : MonoBehaviour {
         neighbors[index].RefreshSelfOnly();
         RefreshSelfOnly();
     }
-    
+    // Water
+    public int WaterLevel
+    {
+        get
+        {
+            return waterLevel;
+        }
+        set
+        {
+            if (WaterLevel == value)
+            {
+                return;
+            }
+            waterLevel = value;
+            ValidateRivers();
+            Refresh();
+        }
+    }
+    public bool IsUnderwater
+    {
+        get
+        {
+            return waterLevel > elevation;
+        }
+    }
+    public float WaterSurfaceY
+    {
+        get
+        {
+            return (waterLevel + HexMetrics.waterElevationOffset) * HexMetrics.elevationStep;
+        }
+    }
+    bool IsValidRiverDestination (HexCell neighbor)
+    {
+        return neighbor && (elevation >= neighbor.elevation || waterLevel == neighbor.elevation);
+    }
+    void ValidateRivers()
+    {
+        if (hasOutgoingRiver && !IsValidRiverDestination(GetNeighbor(outgoingRiver)))
+        {
+            RemoveOutgoingRiver();
+        }
+        if (hasIncomingRiver && !GetNeighbor(incomingRiver).IsValidRiverDestination(this))
+        {
+            RemoveIncomingRiver();
+        }
+    }
 }

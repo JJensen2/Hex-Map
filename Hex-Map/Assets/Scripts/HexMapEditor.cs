@@ -10,10 +10,12 @@ public class HexMapEditor : MonoBehaviour {
     private Color activeColor;
 
     int activeElevation;
+    int activeWaterLevel;
     // If a color should be applied to a cell
     bool applyColor;
-    // If the elevation should be changed
+    
     bool applyElevation = true;
+    bool applyWaterLevel = true;
     // Toggles
     enum OptionalToggle
     {
@@ -106,6 +108,11 @@ public class HexMapEditor : MonoBehaviour {
             {
                 cell.Elevation = activeElevation;
             }
+            // Water
+            if (applyWaterLevel)
+            {
+                cell.WaterLevel = activeWaterLevel; 
+            }
             // River
             if (riverMode == OptionalToggle.No)
             {
@@ -187,5 +194,15 @@ public class HexMapEditor : MonoBehaviour {
     public void SetRoadMode(int mode)
     {
         roadMode = (OptionalToggle)mode;
+    }
+
+    public void SetApplyWaterLevel (bool toggle)
+    {
+        applyWaterLevel = toggle;
+    }
+
+    public void SetWaterLevel (float level)
+    {
+        activeWaterLevel = (int)level;
     }
 }
