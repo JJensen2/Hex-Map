@@ -16,11 +16,15 @@ public class HexGrid : MonoBehaviour {
     int cellCountX, cellCountZ;
     public HexGridChunk chunkPrefab;
     HexGridChunk[] chunks;
- 
+
+    // Randomizing features
+    public int seed;
+
     void Awake()
     {
         // Assign the noise sample texture to the hexmetrics field
         HexMetrics.noiseSource = noiseSource;
+        HexMetrics.InitializeHashGrid(seed);
 
         cellCountX = chunkCountX * HexMetrics.chunkSizeX;
         cellCountZ = chunkCountZ * HexMetrics.chunkSizeZ;
@@ -32,8 +36,12 @@ public class HexGrid : MonoBehaviour {
 
     void OnEnable ()
     {
-        // Assign the noise sample texture to the hexmetrics field
-        HexMetrics.noiseSource = noiseSource;
+        if (!HexMetrics.noiseSource)
+        {
+            // Assign the noise sample texture to the hexmetrics field
+            HexMetrics.noiseSource = noiseSource;
+            HexMetrics.InitializeHashGrid(seed);
+        }
     }
 
     void CreateCell(int x, int z, int i)
