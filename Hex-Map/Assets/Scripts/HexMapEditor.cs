@@ -26,6 +26,9 @@ public class HexMapEditor : MonoBehaviour {
     bool isDrag;
     HexDirection dragDirection;
     HexCell previousCell;
+    // Features
+    int activeUrbanLevel, activeFarmLevel, activePlantLevel;
+    bool applyUrbanLevel, applyFarmLevel, applyPlantLevel;
 
     int brushSize;
 
@@ -65,10 +68,10 @@ public class HexMapEditor : MonoBehaviour {
             EditCells(currentCell);
             previousCell = currentCell;
         }
-        else
+        else  // not sure if this should actually be set to null
         {
             previousCell = null;
-        }
+       }
     }
 
     void EditCells(HexCell center)
@@ -113,6 +116,21 @@ public class HexMapEditor : MonoBehaviour {
             {
                 cell.WaterLevel = activeWaterLevel; 
             }
+            // Urban/City
+            if (applyUrbanLevel)
+            {
+                cell.UrbanLevel = activeUrbanLevel;
+            }
+            // Farm
+            if (applyFarmLevel)
+            {
+                cell.FarmLevel = activeFarmLevel;
+            }
+            // Plant
+            if (applyPlantLevel)
+            {
+                cell.PlantLevel = activePlantLevel;
+            }
             // River
             if (riverMode == OptionalToggle.No)
             {
@@ -137,7 +155,6 @@ public class HexMapEditor : MonoBehaviour {
                    }
                 }
             }
-            
         }
     }
 
@@ -204,5 +221,35 @@ public class HexMapEditor : MonoBehaviour {
     public void SetWaterLevel (float level)
     {
         activeWaterLevel = (int)level;
+    }
+
+    // Urban/City
+    public void SetApplyUrbanLevel(bool toggle)
+    {
+        applyUrbanLevel = toggle;
+    }
+    public void SetUrbanLevel(float level)
+    {
+        activeUrbanLevel = (int)level;
+    }
+
+    // Farms
+    public void SetApplyFarmLevel(bool toggle)
+    {
+        applyFarmLevel = toggle;
+    }
+    public void SetFarmLevel(float level)
+    {
+        activeFarmLevel = (int)level;
+    }
+
+    // Plants
+    public void SetApplyPlantLevel(bool toggle)
+    {
+        applyPlantLevel = toggle;
+    }
+    public void SetPlantLevel(float level)
+    {
+        activePlantLevel = (int)level;
     }
 }

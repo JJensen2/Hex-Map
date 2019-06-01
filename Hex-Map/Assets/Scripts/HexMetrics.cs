@@ -30,6 +30,14 @@ public static class HexMetrics {
     // Hex cells per group
     public const int chunkSizeX = 5, chunkSizeZ = 5;
 
+    // Map Features/Objects
+    static float[][] featureThresholds =
+    {
+        new float[] { 0.0f, 0.0f, 0.4f},
+        new float[] { 0.0f, 0.4f, 0.6f},
+        new float[] { 0.4f, 0.6f, 0.8f}
+    };
+
     // Rivers
     public const float streamBedElevationOffset = -1.75f;
     //public const float riverSurfaceElevationOffset = -0.5f;
@@ -38,6 +46,11 @@ public static class HexMetrics {
     // Water
     public const float waterFactor = 0.6f;
     public const float waterBlendFactor = 1f - waterFactor;
+
+    // Features
+    public const int hashGridSize = 256;
+    static HexHash[] hashGrid;
+    public const float hashGridScale = 0.25f;
     
     static Vector3[] corners = {
         new Vector3(0f, 0f, outerRadius),
@@ -136,6 +149,39 @@ public static class HexMetrics {
     public static Vector3 GetWaterBridge(HexDirection direction)
     {
         return (corners[(int)direction] + corners[(int)direction + 1]) * waterBlendFactor;
+    }
+
+    // Features
+    public static void InitializeHashGrid(int seed)
+    {
+        hashGrid = new HexHash[hashGridSize * hashGridSize];
+        Random.State currentState = Random.state;
+        Random.InitState(seed);
+        for (int i = 0; i < hashGrid.Length; i++)
+        {
+            hashGrid[i] = HexHash.Create();
+        }
+        Random.state = currentState;
+    }
+    public static HexHash SampleHashGrid(Vector3 position)
+    {
+        int x = (int)(position.x * hashGridScale) % hashGridSize;
+        if (x < 0)
+        {
+            x += hashGridSize;
+        }
+        int z = (int)(position.z * hashGridScale) % hashGridSize;
+        if (z < 0)
+        {
+            z += hashGridSize;
+        }
+        return hashGrid[x + z * hashGridSize];
+    }
+
+    // Map Features/Objects
+    public static float[] GetFeatureThresholds (int level)
+    {
+        return featureThresholds[level];
     }
 
 }

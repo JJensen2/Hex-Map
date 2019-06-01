@@ -26,6 +26,9 @@ public class HexCell : MonoBehaviour {
     // Water
     int waterLevel;
 
+    // Features 
+    int urbanLevel, farmLevel, plantLevel; 
+
     public static Texture2D noiseSource;
 
     public Vector3 Position
@@ -362,6 +365,56 @@ public class HexCell : MonoBehaviour {
         if (hasIncomingRiver && !GetNeighbor(incomingRiver).IsValidRiverDestination(this))
         {
             RemoveIncomingRiver();
+        }
+    }
+
+    // City
+    public int UrbanLevel
+    {
+        get
+        {
+            return urbanLevel;
+        }
+        set
+        {
+            if (urbanLevel != value)
+            {
+                urbanLevel = value;
+                RefreshSelfOnly();
+            }
+        }
+    }
+    // Farms
+    public int FarmLevel
+    {
+        get
+        {
+            return farmLevel;
+        }
+        set
+        {
+            if (farmLevel != value)
+            {
+                farmLevel = value;
+                RefreshSelfOnly();
+            }
+        }
+    }
+
+    // Plants
+    public int PlantLevel
+    {
+        get
+        {
+            return plantLevel;
+        }
+        set
+        {
+            if (plantLevel != value)
+            {
+                plantLevel = value;
+                RefreshSelfOnly();
+            }
         }
     }
 }
